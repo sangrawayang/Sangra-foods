@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sangra-foods</title>
+
+<style>
+/* -------- GLOBAL STYLE -------- */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f2f6f4;
+  color: #083845;
+  scroll-behavior: smooth;
+  padding-top: 76px; /* offset fixed navbar so content isn't hidden */
+}
+
+/* Design tokens */
+:root{
+  --bg: #f2f6f4;
+  --brand: #083845;
+  --muted: #0b3a3f;
+  --accent-1: #6b46ff;
+  --accent-2: #b946ef;
+  --card-bg: #ffffff;
+  --max-content-width: 1100px;
+}
+
+/* Base typography for readability */
+html{ font-size: 16px; }
+body{ font-size: 1rem; line-height: 1.6; color: var(--muted); }
+
+/* Constrain long lines for readability */
+.hero-text, .product-info .desc, .price-text{ max-width: 62ch; }
+
+/* Improve focus styles for keyboard users */
+a:focus-visible, button:focus-visible{ outline: 3px solid rgba(107,70,255,0.14); outline-offset: 3px; }
+
+/* Make sections less tall and easier to scan */
+section{ padding: clamp(36px, 6vw, 80px) 6%; }
+
+/* Constrain page content horizontally */
+.page-inner{ max-width: var(--max-content-width); margin: 0 auto; }
+
+/* make padding and widths predictable to avoid overflow */
+* { box-sizing: border-box; }
+
+/* Make images scale down on small screens */
+img{ max-width: 100%; height: auto; display: block; }
+
+section {
+  padding: 100px 10%;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+/* -------------------------------------
+   NAVBAR BARU (lebih elegan & clean)
+-------------------------------------- */
+.navbar {
+  width: 100%;
+  padding: 14px 5%; /* reduced horizontal padding to avoid edge overflow */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #d8efe9;   /* WARNA NAVBAR GAYA ZYLO */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* mobile menu button (hidden on desktop) */
+.menu-toggle{
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  line-height:1;
+  cursor: pointer;
+  color: #083845;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #083845;
+}
+
+.navbar nav{ display:flex; gap:20px; align-items:center; }
+.navbar a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #083845;
+  transition: 0.2s;
+}
+
+.navbar a:hover {
+  opacity: 0.6;
+}
+
+/* Navbar tweaks: spacing and readable contrast */
+.navbar nav a{ padding: 8px 10px; border-radius: 8px; }
+.navbar a{ color: var(--brand); }
+.navbar a:focus, .navbar a:hover{ background: rgba(6,58,61,0.04); }
+
+/* -------- BUTTON -------- */
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #083845;
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+/* =====================================================
+   WARNA PER SECTION (SESUAI PERMINTAAN)
+   1. Hero → Biru Tua
+   2. Produk 1 → Abu Muda
+   3. Produk 2 → Biru Soft
+   4. Produk 3 → Abu Muda
+   5. Beli Sekarang → Biru Soft
+   6. Kontak → Abu Muda
+===================================================== */
+
+.hero { background: #0A3A44; color: white; }
+#produk1 { background: linear-gradient(135deg,#e8f7ee 0%, #d4f0e2 100%); } /* green */
+#produk2 { background: linear-gradient(135deg,#f3f4f6 0%, #eaedef 100%); } /* gray */
+#produk3 { background: linear-gradient(135deg,#e8f7ee 0%, #d4f0e2 100%); } /* green */
+#beli { background: linear-gradient(135deg,#f3f4f6 0%, #eaedef 100%); } /* gray */
+#kontak { background: linear-gradient(135deg,#e8f7ee 0%, #d4f0e2 100%); } /* green */
+
+/* -------- HERO -------- */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 120px; /* reduce top gap so hero appears closer under navbar */
+}
+
+/* faded photo behind hero title */
+.hero{ position: relative; overflow: hidden; }
+
+/* hero background image element (use src) */
+.hero-bg{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  opacity: 0.08;
+  filter: grayscale(12%) blur(1px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-text{ position: relative; z-index: 2; max-width: 60%; }
+.hero-img{ position: relative; z-index: 2; }
+
+.hero-text h1 {
+  font-size: 72px; /* desktop default */
+  font-weight: 800;
+  line-height: 1.02;
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, #ffffff 0%, #ffd166 40%, #b946ef 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+  text-shadow: 0 18px 50px rgba(11,58,63,0.12);
+  position: relative;
+  animation: titleShimmer 4s ease-in-out infinite;
+}
+
+.hero-text p {
+  font-size: 18px;
+  opacity: 0.9;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.hero-img{ flex: 0 0 420px; display:flex; align-items:center; justify-content:center; }
+.hero-img .product-card{ background: rgba(255,255,255,0.95); padding:12px; border-radius:18px; box-shadow: 0 26px 80px rgba(8,56,69,0.12); transform: rotate(-3deg); transition: transform .35s ease, box-shadow .35s ease; }
+.hero-img .product-card img{ width: 100%; max-width: 360px; height: auto; object-fit: cover; border-radius:12px; display:block; }
+.hero-img .product-card:hover{ transform: rotate(0deg) translateY(-8px); box-shadow: 0 36px 100px rgba(8,56,69,0.18); }
+
+/* Hero CTA (make 'Beli Sekarang' nicer) */
+.hero .btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(90deg,#28a745,#20c997);
+  color: white;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(32,201,151,0.18);
+  border: none;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  margin-top: 18px;
+}
+.hero .btn:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(32,201,151,0.22); opacity: 0.98 }
+
+/* make buy-card buttons match but smaller */
+.buy-card .btn{ padding:10px 22px; border-radius:12px; background: linear-gradient(90deg,#6b46ff,#b946ef); box-shadow: 0 10px 28px rgba(107,70,255,0.12); }
+
+/* -------- PRODUK PAGE (visual polish only) -------- */
+.product-page {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px; /* tighten space between image and text */
+  padding: 36px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.02);
+  box-shadow: 0 8px 30px rgba(8,56,69,0.04);
+  flex-wrap: wrap; /* allow wrapping for narrow viewports */
+}
+
+.product-img{ flex: 0 0 380px; }
+.product-img img {
+  width: 100%;
+  max-width: 380px;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(8,56,69,0.12);
+  transition: transform .45s ease, box-shadow .45s ease;
+}
+.product-img img:hover{ transform: translateY(-6px); box-shadow: 0 28px 60px rgba(8,56,69,0.16); }
+
+.product-info h2 {
+  font-size: 48px; /* desktop default */
+  font-weight: 800;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg,#083845 0%, #6b46ff 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.product-info p {
+  font-size: 1rem;
+  margin: 0 0 0.6rem 0;
+  opacity: 0.95;
+  color: var(--muted);
+  line-height: 1.7;
+}
+/* justify product paragraphs for better reading on both desktop and mobile */
+.product-info .desc p{ text-align: justify; hyphens: auto; }
+
+/* Description + Price layout: description full width, price + CTA below */
+.desc-price{ margin-top:18px; display:flex; flex-direction:column; gap:18px; }
+.desc-price .desc{ flex: 1; }
+.price-cta{ display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; }
+.price{ font-size: 24px; font-weight:900; color:#083845; background: linear-gradient(90deg,#e6fbf0,#d4f0e2); padding:12px 18px; border-radius:12px; box-shadow: 0 8px 24px rgba(8,56,69,0.06); }
+.price-text{ font-size:16px; color:#083845; font-weight:700; opacity:1; max-width:240px; line-height:1.5; font-style:italic; background: rgba(37,211,102,0.08); padding:12px 16px; border-radius:10px; border-left:4px solid #25d366; }
+.cta-whatsapp{ display:inline-flex; align-items:center; gap:8px; padding:12px 20px; background: linear-gradient(90deg,#25d366,#20ba63); color:white; border:none; border-radius:12px; font-weight:800; font-size:15px; text-decoration:none; box-shadow: 0 10px 28px rgba(37,211,102,0.14); transition: transform .15s ease, box-shadow .15s ease; }
+.cta-whatsapp:hover{ transform: translateY(-2px); box-shadow: 0 14px 40px rgba(37,211,102,0.2); }
+
+/* gentle entrance animation */
+@keyframes popIn { from{ opacity: 0; transform: translateY(8px); } to{ opacity:1; transform: translateY(0); } }
+.product-info{ animation: popIn .6s ease both; text-align: left; flex: 1; margin-left: 8px; }
+
+/* highlight specific words */
+.hl{ background: linear-gradient(90deg,#6b46ff,#b946ef); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight:800 }
+
+/* Responsive: stack on small screens so layout doesn't break */
+@media (max-width: 700px){
+  section { padding: 60px 6%; }
+  .navbar { padding: 12px 6%; }
+  .menu-toggle{ display: block; }
+  /* mobile nav uses animated max-height instead of display:none for smooth transition */
+  .navbar nav{ position: absolute; top: 56px; right: 6%; background: #d8efe9; padding: 10px; border-radius: 10px; flex-direction: column; gap: 8px; box-shadow: 0 8px 30px rgba(8,56,69,0.08); max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-8px); transition: max-height .32s ease, opacity .24s ease, transform .24s ease; pointer-events: none; }
+  .navbar.nav-open nav{ max-height: 420px; opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .navbar nav a{ display: block; padding: 10px 14px; border-radius: 8px; }
+  .product-page{ flex-direction: column; align-items: center; gap: 18px; }
+  .product-img{ flex: 0 0 auto; }
+  .product-img img{ width: 320px; max-width:100%; }
+  .hero-text{ max-width:100%; text-align:center; }
+  .desc-price{ flex-direction: column; align-items: center; text-align: center; }
+  .price{ margin-top: 12px; }
+  .hero-img{ flex: 0 0 auto; }
+  .hero-img .product-card img{ width: 280px; }
+
+  /* make CTAs (except hero CTA) full width for easier tapping */
+  .buy-card .btn, .btn { width: 100%; box-sizing: border-box; }
+  /* keep hero CTA compact and center it on mobile */
+  .hero .btn{ width: auto; align-self: center; }
+  .hero-text p{ font-size: 16px; }
+  .hero-text h1{ font-size: 48px; }
+  .product-info h2{ font-size: 36px; }
+}
+
+@media (max-width: 480px){
+  section { padding: 40px 5%; }
+  .hero{ padding-top: 110px; }
+  .buy-row{ gap: 18px; }
+  .buy-card{ width: 100%; max-width: 420px; }
+  .product-img img{ width: 280px; }
+  .product-info h2{ font-size: 30px; }
+  .price{ font-size: 20px; }
+  .hero-img .product-card img{ max-width: 220px; }
+}
+
+@media (max-width: 420px){
+  /* hide large hero image on very small screens to keep layout clean */
+  .hero-img{ display: none; }
+  .hero{ padding-top: 90px; }
+  .buy-section h2{ font-size: 36px; }
+  .hero-text h1{ font-size: 34px; }
+  .product-info h2{ font-size: 26px; }
+  .product-info .desc p{ text-align: justify; }
+}
+
+/* hero title shimmer animation */
+@keyframes titleShimmer{
+  0%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
+  100%{ background-position: 0% 50%; }
+}
+
+.hero-text h1::after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -12px;
+  width: 84px;
+  height: 8px;
+  background: linear-gradient(90deg,#ffd166,#b946ef);
+  border-radius: 6px;
+  box-shadow: 0 8px 22px rgba(107,70,255,0.12);
+}
+
+@media (max-width: 900px){
+  .hero-text h1{ font-size: 48px; }
+}
+
+@media (max-width: 480px){
+  .hero-text h1{ font-size: 34px; }
+  .hero-text h1::after{ width: 56px; height:6px; bottom:-10px; }
+}
+
+/* -------- BELI SEKARANG -------- */
+.buy-section h2 {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 50px;
+}
+
+.buy-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 24px;
+  justify-items: center;
+}
+
+.buy-card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  text-align: center;
+  width: 230px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.buy-card img {
+  width: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+.buy-card p {
+  font-weight: 600;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+/* -------- KONTAK -------- */
+.contact {
+  text-align: center;
+}
+
+.contact h2 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+/* -------- FOOTER -------- */
+footer {
+  text-align: center;
+  padding: 30px;
+  opacity: 0.6;
+  font-size: 14px;
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo">Sangra-foods</div>
+  <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-nav">☰</button>
+  <nav id="main-nav" role="navigation" aria-hidden="true">
+    <a href="#produk1">Produk</a>
+    <a href="#beli">Beli Sekarang</a>
+    <a href="#kontak">Kontak Kami</a>
+  </nav>
+</header>
+
+<!-- COVER PAGE -->
+<section class="hero">
+  <img class="hero-bg" src="Bg.JPG" alt="hero background" />
+  <div class="hero-text">
+    <h1>PRODUK OLAHAN CUMI-CUMI<br>SANGRA-FOODS</h1>
+    <p>Dibuat langsung dengan cumi segar hasil tangkapan nelayan Desa Sangrawayang</p>
+    <a href="#beli" class="btn">Beli Sekarang</a>
+  </div>
+  <div class="hero-img">
+    <div class="product-card">
+      <img src="3 produk.png" alt="produk featured" />
+    </div>
+  </div>
+</section>
+
+<!-- PRODUK 1 -->
+<section id="produk1" class="product-page">
+  <div class="product-img">
+    <img src="MockupNaget.jpg" />
+  </div>
+  <div class="product-info">
+    <h2>NUGET CUMI - SANGRA-FOODS</h2>
+    <div class="desc-price">
+      <div class="desc">
+        <p>Nugget Cumi merupakan olahan cumi-cumi yang dicincang dan dihaluskan bersama tepung, bumbu, serta sedikit minyak hingga membentuk adonan lembut. Setelah dikukus, adonan dipotong lalu dilapisi tepung roti sehingga menghasilkan tekstur renyah di luar dan lembut di dalam. Nugget ini memiliki rasa gurih dengan aroma cumi yang khas, sangat cocok dijadikan lauk praktis maupun camilan. Produk ini menjadi inovasi olahan seafood yang lebih sehat dan bernilai tambah.</p>
+      </div>
+      <div class="price-cta">
+        <div class="price">Rp 199.000</div>
+        <div class="price-text">Dapatkan nugget cumi premium berkualitas dengan harga terjangkau!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUK 2 -->
+<section id="produk2" class="product-page">
+  <div class="product-img">
+    <img src="MockupBaso.jpg" />
+  </div>
+  <div class="product-info">
+    <h2>BASO CUMI - SANGRA-FOODS</h2>
+    <div class="desc-price">
+      <div class="desc">
+        <p>Bakso Cumi adalah bakso berbahan dasar cumi-cumi yang direbus, dihaluskan, lalu dicampur dengan es batu, tepung tapioka, bumbu, dan putih telur hingga menjadi adonan yang kenyal. Setelah dibentuk bulat, bakso direbus hingga mengapung dan mengembang. Bakso cumi menawarkan sensasi rasa laut yang unik dengan tekstur kenyal khas bakso namun memiliki aroma dan rasa cumi yang lebih menonjol. Produk ini dapat digunakan dalam berbagai hidangan, seperti kuah bakso, tumisan, atau asupan protein sehari-hari.</p>
+      </div>
+      <div class="price-cta">
+        <div class="price">Rp 149.000</div>
+        <div class="price-text">Nikmati kelezatan bakso cumi premium kami sekarang juga!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUK 3 -->
+<section id="produk3" class="product-page">
+  <div class="product-img">
+    <img src="MockupKerupuk.jpg" />
+  </div>
+  <div class="product-info">
+    <h2>KERUPUK CUMI - SANGRA-FOODS</h2>
+    <div class="desc-price">
+      <div class="desc">
+        <p>Kerupuk Cumi adalah produk olahan berbahan dasar cumi-cumi yang dihaluskan lalu dicampur dengan bumbu dan tepung tapioka hingga menjadi adonan elastis. Adonan ini kemudian dikukus, diiris tipis, lalu dijemur hingga benar-benar kering sebelum digoreng. Kerupuk cumi memiliki tekstur renyah, aroma laut yang khas, serta rasa gurih alami dari cumi. Produk ini cocok sebagai camilan maupun pendamping makan, menawarkan cita rasa seafood yang lebih premium dibanding kerupuk biasa.</p>
+      </div>
+      <div class="price-cta">
+        <div class="price">Rp 129.000</div>
+        <div class="price-text">Camilan renyah dan gurih yang tak tertahankan dengan cita rasa laut!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BELI SEKARANG -->
+<section id="beli" class="buy-section">
+  <h2>Beli Sekarang</h2>
+
+  <div class="buy-row">
+    <div class="buy-card">
+      <img src="LogoNuget.png" />
+      <p>Nuget Cumi</p>
+      <a href="https://wa.me/62xxxxxxxxxx?text=Saya%20ingin%20pesan%20Nuget%20Cumi%20Sangra-Foods" class="btn">🔗 Beli via WhatsApp</a>
+    </div>
+
+    <div class="buy-card">
+      <img src="LogoBaso.png" />
+      <p>Baso Cumi</p>
+      <a href="https://wa.me/62xxxxxxxxxx?text=Saya%20ingin%20pesan%20Baso%20Cumi%20Sangra-Foods" class="btn">🔗 Beli via WhatsApp</a>
+    </div>
+
+    <div class="buy-card">
+      <img src="LogoKerupuk.png" />
+      <p>Kerupuk Cumi</p>
+      <a href="https://wa.me/62xxxxxxxxxx?text=Saya%20ingin%20pesan%20Kerupuk%20Cumi%20Sangra-Foods" class="btn">🔗 Beli via WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAK KAMI -->
+<section id="kontak" class="contact">
+  <h2>Kontak Kami</h2>
+  <a href="https://wa.me/62xxxxxxxxxx" class="btn">Hubungi via WhatsApp</a>
+</section>
+
+<footer>
+  © 2025 SANGRA-FOODS — All Rights Reserved.
+</footer>
+
+<script>
+  // Mobile navbar toggle with accessibility: aria-expanded, escape to close, click-outside, focus management
+  (function(){
+    const btn = document.querySelector('.menu-toggle');
+    const header = document.querySelector('header.navbar');
+    const nav = document.getElementById('main-nav');
+    if(!btn || !header || !nav) return;
+
+    const links = Array.from(nav.querySelectorAll('a'));
+    const firstLink = links[0] || null;
+    const lastLink = links[links.length-1] || null;
+
+    function openNav(){
+      header.classList.add('nav-open');
+      btn.setAttribute('aria-expanded','true');
+      nav.setAttribute('aria-hidden','false');
+      // move focus to first link for keyboard users
+      if(firstLink) firstLink.focus();
+      document.addEventListener('keydown', onKeyDown);
+      document.addEventListener('click', onClickOutside);
+    }
+
+    function closeNav(){
+      header.classList.remove('nav-open');
+      btn.setAttribute('aria-expanded','false');
+      nav.setAttribute('aria-hidden','true');
+      btn.focus();
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('click', onClickOutside);
+    }
+
+    function toggleNav(){
+      if(header.classList.contains('nav-open')) closeNav(); else openNav();
+    }
+
+    function onKeyDown(e){
+      if(e.key === 'Escape'){
+        closeNav();
+        return;
+      }
+
+      // simple focus trap: keep Tab within nav when open
+      if(e.key === 'Tab'){
+        if(!firstLink) return;
+        const active = document.activeElement;
+        if(e.shiftKey){
+          if(active === firstLink){
+            e.preventDefault();
+            if(lastLink) lastLink.focus();
+          }
+        } else {
+          if(active === lastLink){
+            e.preventDefault();
+            firstLink.focus();
+          }
+        }
+      }
+    }
+
+    function onClickOutside(e){
+      if(!header.contains(e.target)) return closeNav();
+      // clicking the toggle button should not immediately re-close
+      if(e.target === btn) return;
+    }
+
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      toggleNav();
+    });
+
+    // close nav if a link is clicked (helpful on mobile)
+    links.forEach(l => l.addEventListener('click', () => closeNav()));
+  })();
+</script>
+
+</body>
+</html>
